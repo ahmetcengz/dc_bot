@@ -9,7 +9,7 @@ const slashCommandMap: SlashCommandMap = {};
 
 const slashFiles = fs
   .readdirSync(__dirname + '/../commands')
-  .filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+  .filter(file => file.endsWith('.js'));
 
 for (const file of slashFiles) {
   const slashcmd = require(`../commands/${file}`);

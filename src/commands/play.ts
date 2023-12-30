@@ -1,9 +1,9 @@
 import { head } from 'lodash';
 
 import { EmbedBuilder } from 'discord.js';
-import { GuildQueue, Track } from 'discord-player';
+import { GuildQueue, QueryType, Track } from 'discord-player';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { YoutubeExtractor } from '@discord-player/extractor';
+import { YouTubeExtractor } from '@discord-player/extractor';
 
 const playCommandBuild = new SlashCommandBuilder()
   .setName('play')
@@ -15,39 +15,33 @@ const playCommandBuild = new SlashCommandBuilder()
   );
 
 const run = async (args: any) => {
-  const { client, interaction, player } = args;
+  const { interaction, player } = args;
 
-  if (!interaction?.member?.voice?.channel)
-    return interaction.editReply('Ses kanalında değilsin.');
+  if (!interaction?.member?.voice?.channel) {
+    return interaction.editReply('You are not in a voice channel.');
+  }
 
-  player.extractors.register(YoutubeExtractor, {});
+  player.extractors.register(YouTubeExtractor, {});
   const queue = (await player.nodes.create(interaction.guild)) as GuildQueue;
 
-  await queue.connect(client);
   if (!queue.connection) {
     await queue.connect(interaction.member.voice.channel);
   }
 
   const embed = new EmbedBuilder();
 
-  const url = interaction.options.getString('şarkı');
+  const url = interaction.options.getString('song');
   const result = await player.search(url, {
     requestedBy: interaction.user,
-    searchEngine: `ext:${YoutubeExtractor.identifier}`,
+    searchEngine: `ext:${YouTubeExtractor.identifier}`,
   });
 
   if (result.tracks.length === 0) {
-    return interaction.editReply('Böyle bir şarkı bulamadım, cik.');
+    return interaction.editReply('I could not find such a song');
   }
 
   const song = head(result.tracks) as Track;
-
-  if (!queue.isPlaying()) {
-    await queue.play(song);
-  } else {
-    queue.addTrack(song);
-    return interaction.reply('Added to the queue');
-  }
+  await queue.play(song);
 
   embed
     .setDescription(
@@ -60,6 +54,6 @@ const run = async (args: any) => {
 };
 
 module.exports = {
-  body: playCommandBuild,
+  data: playCommandBuild,
   run,
 };

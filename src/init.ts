@@ -8,7 +8,7 @@ export default (args: InitializeFunctionArguments) => {
   const { client, commands, slashCommandMap, getPlayer } = args;
 
   if (CONSTANTS_ENV.LOAD_SLASH) {
-    const rest = new REST({ version: '9' }).setToken(CONSTANTS_ENV.TOKEN);
+    const rest = new REST().setToken(CONSTANTS_ENV.TOKEN);
     console.log('Deploying slash commands');
 
     rest

@@ -1,4 +1,4 @@
-import Discord, { Client } from 'discord.js';
+import { Client } from 'discord.js';
 
 import CONSTANTS_INTENTS from './constants/intents';
 import getCommandFiles from './utils/getCommandFiles';
@@ -7,7 +7,7 @@ import init from './init';
 
 const { commands, slashCommandMap } = getCommandFiles();
 
-const client: Client = new Discord.Client({
+const client: Client = new Client({
   intents: CONSTANTS_INTENTS,
 });
 
