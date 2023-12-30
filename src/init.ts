@@ -1,19 +1,10 @@
-import { Client } from 'discord.js';
 import { Routes } from 'discord-api-types/v9';
-import { Player } from 'discord-player';
 import { REST } from '@discordjs/rest';
 
-import { Commands, SlashCommandMap } from './utils/types/getCommandFiles';
 import CONSTANTS_ENV from './constants/env';
+import { InitializeFunctionArguments } from './types/common';
 
-interface InitFunctionArgs {
-  client: Client;
-  commands: Commands;
-  slashCommandMap: SlashCommandMap;
-  getPlayer: (client: Client) => Player;
-}
-
-export default (args: InitFunctionArgs) => {
+export default (args: InitializeFunctionArguments) => {
   const { client, commands, slashCommandMap, getPlayer } = args;
 
   if (CONSTANTS_ENV.LOAD_SLASH) {
@@ -52,7 +43,7 @@ export default (args: InitFunctionArgs) => {
         if (!slashcmd) interaction.reply('Not a valid slash command');
 
         await interaction.deferReply();
-        await slashcmd.run({ client, interaction, player: getPlayer(client) });
+        slashcmd.run({ client, interaction, player: getPlayer(client) });
       }
 
       handleCommand();
